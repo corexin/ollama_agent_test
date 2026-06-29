@@ -1,7 +1,6 @@
 import fs from "fs/promises";
 import fsS from "node:fs";
 import path from "node:path";
-import type { Tool } from "ollama";
 
 export function getCurrentTime(): string {
   return new Date().toString();
@@ -48,7 +47,10 @@ export async function readFile(params: { fileName: string }): Promise<string> {
   }
 }
 
-function writeToFile(params: { filePath: string; content: string }): void {
+export function writeToFile(params: {
+  filePath: string;
+  content: string;
+}): void {
   try {
     // Create directory if it doesn't exist
     const dirname = path.dirname(params.filePath);
@@ -62,92 +64,3 @@ function writeToFile(params: { filePath: string; content: string }): void {
     console.error(`❌ Failed to write file ${params.filePath}:`, error);
   }
 }
-
-export type ToolDef = {
-  type: "function";
-  function: {
-    name: string;
-    description: string;
-    parameters?: {
-      type: "object";
-      properties: object;
-      // Allow multiple string parameters (flexible)
-
-      required?: string[];
-    };
-    invoke: (...args: any[]) => Promise<string> | string;
-  };
-};
-export interface MyTool extends Tool {
-  invoke: Function;
-}
-export const ToolRegistery = {} as { [key: string]: MyTool };
-
-export function registerTool(toolDef: MyTool) {
-  ToolRegistery[toolDef.function.name!] = toolDef;
-}
-
-registerTool({
-  type: "function",
-  function: {
-    name: "getCurrentTime",
-    description: "Get the current time",
-  },
-  invoke: getCurrentTime,
-});
-registerTool({
-  type: "function",
-  function: {
-    name: "readFile",
-    description: "Get the content of local file",
-    parameters: {
-      type: "object",
-      properties: {
-        fileName: {
-          type: "string",
-          description: "The full path file name.",
-        },
-      },
-    },
-  },
-  invoke: readFile,
-});
-registerTool({
-  type: "function",
-  function: {
-    name: "getWeather",
-    description: "Get the weather  of a given city",
-    parameters: {
-      type: "object",
-      properties: {
-        city: {
-          type: "string",
-          description: "The city name, e.g. Brisbane",
-        },
-      },
-    },
-  },
-  invoke: getWeather,
-});
-
-registerTool({
-  type: "function",
-  function: {
-    name: "writeToFile",
-    description: "Write content to a local file",
-    parameters: {
-      type: "object",
-      properties: {
-        filePath: {
-          type: "string",
-          description: "The file name with full path",
-        },
-        content: {
-          type: "string",
-          description: "The content to write to the file",
-        },
-      },
-    },
-  },
-  invoke: writeToFile,
-});

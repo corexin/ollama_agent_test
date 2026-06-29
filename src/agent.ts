@@ -5,7 +5,7 @@ import ollama, {
   type Tool,
   type ToolCall,
 } from "ollama";
-import { getCurrentTime, ToolRegistery } from "./tools.js";
+import { ToolRegistery } from "./tool/toolRegistry.js";
 import { parseArgs } from "node:util";
 import { invokeLLM } from "./llm.js";
 import { loadPrompt } from "./prompt/loader.js";
@@ -70,5 +70,5 @@ export async function askLLM(question: string) {
 }
 
 await askLLM(
-  "hello, what is the weather in Brisbane?what time is it now? read file at test.txt ; write 'hello world' to file at test_write.txt'",
+  "hello, what is the weather in Brisbane?what time is it now? display file list in current directory'",
 );

@@ -1,5 +1,5 @@
 import Ollama, { type ChatResponse, type Message } from "ollama";
-import { ToolRegistery } from "./tools.js";
+import { ToolRegistery } from "./tool/toolRegistry.js";
 import { log_llm, log_tool } from "./log/logger.js";
 export const invokeLLM = async (
   roleAndMessages: Message[],
